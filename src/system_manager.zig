@@ -31,6 +31,8 @@ pub fn SystemManager(comptime S: type) type {
                 system(state);
             }
 
+            // @Todo: This is totally wrong. We don't want to deinit after every loop. Only when
+            // switching to a different state or at the end of game loop.
             if (self.callDeinit) {
                 self.systems.deinitFn(state);
                 self.callDeinit = false;
