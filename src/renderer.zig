@@ -19,6 +19,7 @@ pub const Renderer = struct {
             .window = window,
             .circle = c.sfCircleShape_create() orelse return error.LoadingError,
             .rectangle = c.sfRectangleShape_create() orelse return error.LoadingError,
+            // @Todo: Don't rely on specific fonts. Have a way for the game to create and use them
             .font = c.sfFont_createFromFile("resources/iosevka.ttf") orelse return error.LoadingError,
             .text = c.sfText_create() orelse return error.LoadingError,
         };
