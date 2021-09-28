@@ -11,7 +11,7 @@ pub fn EntityManager(comptime S: type, comptime T: type) type {
         entityCount: usize = 0,
         allocator: *std.mem.Allocator,
 
-        const Handle = struct {
+        pub const Handle = struct {
             index: usize,
             generation: u32,
         };
