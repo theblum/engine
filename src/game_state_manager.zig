@@ -22,6 +22,13 @@ pub fn GameStateManager(comptime S: type, comptime T: type) type {
             };
         }
 
+        pub fn deinit(self: *Self, state: *T) void {
+            if (self.current) |current| {
+                self.array.getPtr(current).systemManager.end(state);
+                self.current = null;
+            }
+        }
+
         pub fn register(self: *Self, gameState: S, systems: *const SystemManager.Item) void {
             self.array.set(gameState, .{ .systemManager = SystemManager.init(systems) });
         }
