@@ -15,6 +15,14 @@ pub fn GameStateManager(comptime S: type, comptime T: type) type {
             systemManager: SystemManager,
         };
 
+        pub fn indexOf(gameState: S) usize {
+            return Array.Indexer.indexOf(gameState);
+        }
+
+        pub fn keyForIndex(index: usize) S {
+            return Array.Indexer.keyForIndex(index);
+        }
+
         pub fn init(start: S) Self {
             return .{
                 .array = Array.initUndefined(),
