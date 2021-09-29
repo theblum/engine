@@ -68,7 +68,10 @@ pub fn EntityManager(comptime S: type, comptime T: type) type {
             if (handle.generation == item.handle.generation) {
                 item.entity = null;
                 self.entityCount -= 1;
-            }
+            } else log.err(
+                "Unable to delete entity due to mismatching generations: {d} != {d}",
+                .{ handle.generation, item.handle.generation },
+            );
         }
 
         pub fn getEntityPtr(self: Self, handle: Handle) !*S {
