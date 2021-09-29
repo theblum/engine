@@ -6,12 +6,12 @@ pub fn SystemManager(comptime S: type) type {
         const Self = @This();
 
         systems: *const Item,
-        inited: bool = false,
-        callDeinit: bool = true,
+        started: bool = false,
+        callEnd: bool = false,
 
         pub const Item = struct {
-            initFn: fn (*S) bool,
-            deinitFn: fn (*S) void,
+            startFn: fn (*S) bool,
+            endFn: fn (*S) void,
             tickFns: []const fn (*S) void,
         };
 
@@ -21,22 +21,24 @@ pub fn SystemManager(comptime S: type) type {
             };
         }
 
-        pub fn run(self: *Self, state: *S) void {
-            if (!self.inited) {
-                self.callDeinit = self.systems.initFn(state);
-                self.inited = true;
+        pub fn start(self: *Self, state: *S) void {
+            if (!self.started) {
+                self.callEnd = self.systems.startFn(state);
+                self.started = true;
             }
+        }
 
+        pub fn end(self: *Self, state: *S) void {
+            if (self.started and self.callEnd) {
+                self.systems.endFn(state);
+                self.started = false;
+                self.callEnd = false;
+            }
+        }
+
+        pub fn run(self: *Self, state: *S) void {
             for (self.systems.tickFns) |system| {
                 system(state);
-            }
-
-            // @Todo: This is totally wrong. We don't want to deinit after every loop. Only when
-            // switching to a different state or at the end of game loop.
-            if (self.callDeinit) {
-                self.systems.deinitFn(state);
-                self.callDeinit = false;
-                self.inited = false;
             }
         }
     };
