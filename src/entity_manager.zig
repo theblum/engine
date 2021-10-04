@@ -84,11 +84,13 @@ pub fn EntityManager(comptime S: type, comptime T: type) type {
         pub fn iterator(self: *Self) Iterator {
             return .{
                 .entityManager = self,
+                .entityCount = self.entityCount,
             };
         }
 
         const Iterator = struct {
             entityManager: *Self,
+            entityCount: usize,
             currentIndex: usize = 0,
             entitiesSeen: usize = 0,
 
@@ -96,7 +98,7 @@ pub fn EntityManager(comptime S: type, comptime T: type) type {
                 var manager = self.entityManager;
                 var result = for (manager.entities[self.currentIndex..]) |*item| {
                     self.currentIndex += 1;
-                    if (self.entitiesSeen >= manager.entityCount)
+                    if (self.entitiesSeen >= self.entityCount)
                         break null;
 
                     if (item.entity) |entity| {
